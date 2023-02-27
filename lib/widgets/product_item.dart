@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop/models/Product.dart';
-import 'package:my_shop/providers/Cart.dart';
 import 'package:provider/provider.dart';
 
-import '../screens/ProductDetailsScreen.dart';
+import '../screens/product_details_screen.dart';
+import '../models/product.dart';
+import '../providers/cart.dart';
 
 class ProductItem extends StatelessWidget {
   const ProductItem({
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +18,7 @@ class ProductItem extends StatelessWidget {
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
         footer: GridTileBar(
-          title: Text(
-            product.title,
-            textAlign: TextAlign.center,
-          ),
-          backgroundColor: Colors.black54,
+          backgroundColor: Colors.black87,
           leading: Consumer<Product>(
             builder: (ctx, pro, child) {
               return IconButton(
@@ -36,10 +32,31 @@ class ProductItem extends StatelessWidget {
               );
             },
           ),
+          title: Text(
+            product.title,
+            textAlign: TextAlign.center,
+          ),
           trailing: IconButton(
             onPressed: () {
-              cart.addToCard(
-                  product.id, product.title, product.imageURL, product.price);
+              cart.addToCart(
+                product.id,
+                product.title,
+                product.imageUrl,
+                product.price,
+              );
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Savatchaga qo\'shildi!'),
+                  duration: const Duration(seconds: 2),
+                  action: SnackBarAction(
+                    label: 'BEKOR QILISH',
+                    onPressed: () {
+                      cart.removeSingleItem(product.id, isCartButton: true);
+                    },
+                  ),
+                ),
+              );
             },
             icon: Icon(
               Icons.shopping_cart,
@@ -53,7 +70,7 @@ class ProductItem extends StatelessWidget {
                 arguments: product.id);
           },
           child: Image.network(
-            product.imageURL,
+            product.imageUrl,
             fit: BoxFit.cover,
           ),
         ),

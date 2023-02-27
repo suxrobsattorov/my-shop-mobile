@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop/screens/CartScreen.dart';
-import 'package:my_shop/widgets/AppDrawer.dart';
-import 'package:my_shop/widgets/CustomCart.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/Cart.dart';
-import '../widgets/ProductsGrid.dart';
+import '../widgets/products_grid.dart';
+import '../widgets/custom_cart.dart';
+import '../widgets/app_drawer.dart';
+import '../providers/cart.dart';
+import 'cart_screen.dart';
 
-// ignore: constant_identifier_names
-enum FiltersOption { ALL, FAVORITE }
+enum FiltersOption {
+  Favorites,
+  All,
+}
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
-  static const routeName = "/";
+  static const routeName = '/home';
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -27,47 +29,49 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("My Shop"),
+        title: const Text('Mening Do\'konim'),
         actions: [
           PopupMenuButton(
             onSelected: (FiltersOption filter) {
               setState(() {
-                if (filter == FiltersOption.ALL) {
+                if (filter == FiltersOption.All) {
+                  //... barchasini ko'rsat
                   _showOnlyFavorites = false;
                 } else {
+                  //... sevimlilarni ko'rsat
                   _showOnlyFavorites = true;
                 }
               });
             },
-            itemBuilder: (context) {
-              return [
-                const PopupMenuItem(
-                  value: FiltersOption.ALL,
-                  child: Text("Barchasi"),
+            itemBuilder: (ctx) {
+              return const [
+                PopupMenuItem(
+                  child: Text('Barchasi'),
+                  value: FiltersOption.All,
                 ),
-                const PopupMenuItem(
-                  value: FiltersOption.FAVORITE,
-                  child: Text("Sevimli"),
-                ),
+                PopupMenuItem(
+                  child: Text('Sevimli'),
+                  value: FiltersOption.Favorites,
+                )
               ];
             },
           ),
           Consumer<Cart>(
             builder: (ctx, cart, child) {
               return CustomCart(
-                number: cart.itemCount().toString(),
                 child: child!,
+                number: cart.itemsCount().toString(),
               );
             },
             child: IconButton(
+              icon: const Icon(Icons.shopping_cart),
               onPressed: () =>
                   Navigator.of(context).pushNamed(CartScreen.routeName),
-              icon: const Icon(Icons.shopping_cart),
             ),
           ),
         ],
       ),
-      drawer: const AppDrawer(),
+      drawer: AppDrawer(),
       body: ProductsGrid(_showOnlyFavorites),
     );
   }

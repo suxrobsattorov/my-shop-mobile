@@ -3,19 +3,18 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../models/CartItem.dart';
+import '../models/cart_item.dart';
 
 class OrderItem extends StatefulWidget {
   final double totalPrice;
   final DateTime date;
   final List<CartItem> products;
-
   const OrderItem({
-    super.key,
+    Key? key,
     required this.totalPrice,
     required this.date,
     required this.products,
-  });
+  }) : super(key: key);
 
   @override
   State<OrderItem> createState() => _OrderItemState();
@@ -27,12 +26,12 @@ class _OrderItemState extends State<OrderItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         children: [
           ListTile(
-            title: Text("\$${widget.totalPrice.toStringAsFixed(2)}"),
-            subtitle: Text(DateFormat("dd/MM/yyyy hh:mm").format(widget.date)),
+            title: Text('\$${widget.totalPrice}'),
+            subtitle: Text(DateFormat('dd/MM/yyyy hh:mm').format(widget.date)),
             trailing: IconButton(
               onPressed: () {
                 setState(() {
@@ -45,19 +44,16 @@ class _OrderItemState extends State<OrderItem> {
           if (_expandItem)
             Container(
               padding: const EdgeInsets.all(5),
-              height: min(widget.products.length * 20 + 30, 80),
+              height: min(widget.products.length * 20 + 40, 100),
               child: ListView.builder(
-                itemExtent: 20,
+                itemExtent: 30,
                 itemCount: widget.products.length,
-                itemBuilder: (ctx, index) {
-                  final product = widget.products[index];
+                itemBuilder: (ctx, i) {
+                  final product = widget.products[i];
                   return ListTile(
-                    title: Text(
-                      product.title,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                    title: Text(product.title),
                     trailing: Text(
-                      "${product.quantity}x \$${product.price}",
+                      '${product.quantity}x \$${product.price}',
                       style: const TextStyle(
                         color: Colors.grey,
                       ),

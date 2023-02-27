@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop/screens/HomeScreen.dart';
-import 'package:my_shop/screens/OrdersScreen.dart';
+
+import '../screens/home_screen.dart';
+import '../screens/orders_screen.dart';
+import '../screens/manage_products_screen.dart';
 
 class AppDrawer extends StatelessWidget {
-  const AppDrawer({super.key});
+  const AppDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,21 +15,27 @@ class AppDrawer extends StatelessWidget {
           AppBar(
             centerTitle: true,
             automaticallyImplyLeading: false,
-            title: const Text("Qo'shimcha"),
+            title: const Text('Salom Do\'stim!'),
           ),
-          const Divider(),
           ListTile(
             leading: const Icon(Icons.shop),
-            title: const Text("Magazin"),
+            title: const Text('Magazin'),
             onTap: () => Navigator.of(context)
                 .pushReplacementNamed(HomeScreen.routeName),
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.payment),
-            title: const Text("Buyurtmalar"),
+            title: const Text('Buyurtmalar'),
             onTap: () => Navigator.of(context)
                 .pushReplacementNamed(OrdersScreen.routeName),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Mahsulotlarni Boshqarish'),
+            onTap: () => Navigator.of(context)
+                .pushReplacementNamed(ManageProductsScreen.routeName),
           ),
         ],
       ),
