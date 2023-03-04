@@ -99,6 +99,7 @@ class ProductDetailsScreen extends StatelessWidget {
                     return ElevatedButton(
                       onPressed: () => cart.addToCart(productId, product.title,
                           product.imageUrl, product.price),
+                      child: const Text('Savatchaga qo\'shish'),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 25,
@@ -109,7 +110,6 @@ class ProductDetailsScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text('Savatchaga qo\'shish'),
                     );
                   }
                 },

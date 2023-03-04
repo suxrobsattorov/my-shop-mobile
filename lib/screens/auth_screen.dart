@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop/providers/auth.dart';
-import 'package:my_shop/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/auth.dart';
 import '../services/http_exception.dart';
 
-// ignore: constant_identifier_names
 enum AuthMode { Register, Login }
 
 class AuthScreen extends StatefulWidget {
@@ -14,7 +12,7 @@ class AuthScreen extends StatefulWidget {
   static const routeName = '/auth';
 
   @override
-  State<AuthScreen> createState() => _AuthScreenState();
+  _AuthScreenState createState() => _AuthScreenState();
 }
 
 class _AuthScreenState extends State<AuthScreen> {
@@ -29,30 +27,35 @@ class _AuthScreenState extends State<AuthScreen> {
 
   void _showErrorDialog(String message) {
     showDialog(
-        context: context,
-        builder: (ctx) {
-          return AlertDialog(
-            title: const Text('Xatolik'),
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Okay!'),
-              ),
-            ],
-          );
-        });
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text('Xatolik'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+              child: const Text('Okay!'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
+      // save form
       _formKey.currentState!.save();
+
       setState(() {
         _loading = true;
       });
       try {
         if (_authMode == AuthMode.Login) {
-          await Provider.of<Auth>(context, listen: false).signup(
+          await Provider.of<Auth>(context, listen: false).login(
             _authData['email']!,
             _authData['password']!,
           );
@@ -62,31 +65,31 @@ class _AuthScreenState extends State<AuthScreen> {
             _authData['password']!,
           );
         }
-        // ignore: use_build_context_synchronously
-        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+
+        //  Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
       } on HttpException catch (error) {
-        var errorMessage = "Xatolik sodir bo'ldi";
+        var errorMessage = 'Xatolik sodir bo\'ldi.';
         if (error.message.contains('EMAIL_EXISTS')) {
-          errorMessage = "Email band";
+          errorMessage = 'Email band.';
         } else if (error.message.contains('INVALID_EMAIL')) {
-          errorMessage = "To'g'ri email kiriting";
+          errorMessage = 'To\'g\'ri email kiriting.';
         } else if (error.message.contains('WEAK_PASSWORD')) {
-          errorMessage = "Juda oson password";
+          errorMessage = 'Juda oson parol';
         } else if (error.message.contains('EMAIL_NOT_FOUND')) {
-          errorMessage = "Bu email bilan foydalanuvchi topilmadi";
+          errorMessage = 'Bu email bilan foydalanuvchi topilmadi.';
         } else if (error.message.contains('INVALID_PASSWORD')) {
-          errorMessage = "Parol noto'g'ri";
+          errorMessage = 'Parol noto\'g\'ri.';
         }
         _showErrorDialog(errorMessage);
       } catch (e) {
         var errorMessage =
-            "Kechirasiz xatolik sodir bo'ldi. Qaytadan o'rinib ko'ring";
+            'Kechirasiz xatolik sodir bo\'ldi. Qaytadan o\'rinib ko\'ring.';
         _showErrorDialog(errorMessage);
       }
+      setState(() {
+        _loading = false;
+      });
     }
-    setState(() {
-      _loading = false;
-    });
   }
 
   void _switchAuthMode() {
@@ -106,105 +109,105 @@ class _AuthScreenState extends State<AuthScreen> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(40),
-          child: GestureDetector(
-            onTap: () => FocusScope.of(context).unfocus(),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  Image.asset(
-                    'assets/images/logo.jpg',
-                    fit: BoxFit.cover,
+          padding: const EdgeInsets.all(40.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Image.asset(
+                  'assets/images/logo.jpg',
+                  fit: BoxFit.cover,
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Email manzil',
                   ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Email manzil',
-                    ),
-                    validator: (email) {
-                      if (email == null || email.isEmpty) {
-                        return "Iltimos, email manzil kiriting";
-                      } else if (!email.contains('@')) {
-                        return "Iltimos, to'g'ri email kiriting";
-                      }
-                    },
-                    onSaved: (email) {
-                      _authData['email'] = email!;
-                    },
+                  validator: (email) {
+                    if (email == null || email.isEmpty) {
+                      return 'Iltimos, email manzil kiriting.';
+                    } else if (!email.contains('@')) {
+                      return 'Iltimos, to\'g\'ri email kiriting.';
+                    }
+                  },
+                  onSaved: (email) {
+                    _authData['email'] = email!;
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Parol',
                   ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Parol',
-                    ),
-                    controller: _passwordController,
-                    validator: (parol) {
-                      if (parol == null || parol.isEmpty) {
-                        return "Iltimos, parolni kiriting";
-                      } else if (parol.length < 6) {
-                        return "Parol juda oson";
-                      }
-                    },
-                    onSaved: (password) {
-                      _authData['password'] = password!;
-                    },
-                    obscureText: true,
-                  ),
-                  if (_authMode == AuthMode.Register)
-                    Column(
-                      children: [
-                        const SizedBox(height: 20),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            labelText: 'Parolni tasdiqlang',
-                          ),
-                          obscureText: true,
-                          validator: (confirmedPassword) {
-                            if (_passwordController.text != confirmedPassword) {
-                              return 'Parollar bir biriga mos kelmadi';
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  const SizedBox(height: 60),
-                  _loading
-                      ? const CircularProgressIndicator()
-                      : ElevatedButton(
-                          onPressed: _submit,
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 15,
-                            ),
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.zero,
-                            ),
-                            minimumSize: const Size(double.infinity, 50),
-                          ),
-                          child: Text(
-                            _authMode == AuthMode.Login
-                                ? 'Kirish'
-                                : "Ro'yhatdan o'tish",
-                            style: const TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                        ),
-                  const SizedBox(height: 40),
-                  TextButton(
-                    onPressed: _switchAuthMode,
-                    child: Text(
-                      _authMode == AuthMode.Login
-                          ? "Ro'yhatdan o'tish"
-                          : 'Kirish',
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        decoration: TextDecoration.underline,
+                  controller: _passwordController,
+                  obscureText: true,
+                  validator: (password) {
+                    if (password == null || password.isEmpty) {
+                      return 'Iltimos, parolni kiriting.';
+                    } else if (password.length < 6) {
+                      return 'Parol juda oson.';
+                    }
+                  },
+                  onSaved: (password) {
+                    _authData['password'] = password!;
+                  },
+                ),
+                if (_authMode == AuthMode.Register)
+                  Column(
+                    children: [
+                      const SizedBox(
+                        height: 20,
                       ),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'Parolni tasdiqlang',
+                        ),
+                        obscureText: true,
+                        validator: (confirmedPassword) {
+                          if (_passwordController.text != confirmedPassword) {
+                            return 'Parollar bir biriga mos kelmadi';
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                const SizedBox(
+                  height: 60,
+                ),
+                _loading
+                    ? const CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: _submit,
+                        child: Text(
+                          _authMode == AuthMode.Login
+                              ? 'KIRISH'
+                              : 'RO\'YXATDAN O\'TISH',
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.zero,
+                          ),
+                          minimumSize: const Size(double.infinity, 50),
+                        ),
+                      ),
+                const SizedBox(
+                  height: 40,
+                ),
+                TextButton(
+                  onPressed: _switchAuthMode,
+                  child: Text(
+                    _authMode == AuthMode.Login
+                        ? 'Ro\'yxatdan o\'tish'
+                        : 'Kirish',
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      decoration: TextDecoration.underline,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
