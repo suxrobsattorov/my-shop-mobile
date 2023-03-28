@@ -57,7 +57,6 @@ class Auth with ChangeNotifier {
       }
 
       _token = data['idToken'];
-      _userId = data['localId'];
       _expiryDate = DateTime.now().add(
         Duration(
           seconds: int.parse(
@@ -65,6 +64,7 @@ class Auth with ChangeNotifier {
           ),
         ),
       );
+      _userId = data['localId'];
       _autoLogout();
       notifyListeners();
 
