@@ -16,6 +16,7 @@ class EditProductScreen extends StatefulWidget {
 class _EditProductScreenState extends State<EditProductScreen> {
   final _form = GlobalKey<FormState>();
   final _imageForm = GlobalKey<FormState>();
+
   // final _priceFocus = FocusNode();
   var _product = Product(
     id: '',
@@ -336,7 +337,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                   ),
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),

@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop/providers/user_products.dart';
+import 'package:my_shop/screens/map_screen.dart';
+import 'package:my_shop/screens/map_screen.dart';
+import 'package:my_shop/screens/save_product_screen.dart';
+import 'package:my_shop/screens/save_product_screen.dart';
 import 'package:provider/provider.dart';
 
 import './screens/home_screen.dart';
@@ -15,7 +20,7 @@ import './providers/orders.dart';
 import './providers/products.dart';
 import './providers/auth.dart';
 
-void main() {
+void main() async {
   runApp(MyApp());
 }
 
@@ -23,6 +28,7 @@ class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
   ThemeData theme = MyShopStyle.theme;
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -37,6 +43,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<Cart>(
           create: (ctx) => Cart(),
+        ),
+        ChangeNotifierProvider<UserProducts>(
+          create: (ctx) => UserProducts(),
         ),
         ChangeNotifierProxyProvider<Auth, Orders>(
           create: (ctx) => Orders(),
@@ -61,7 +70,8 @@ class MyApp extends StatelessWidget {
                       } else {
                         return const AuthScreen();
                       }
-                    }),
+                    },
+                  ),
             routes: {
               HomeScreen.routeName: (ctx) => const HomeScreen(),
               ProductDetailsScreen.routeName: (ctx) =>
@@ -71,6 +81,7 @@ class MyApp extends StatelessWidget {
               ManageProductsScreen.routeName: (ctx) =>
                   const ManageProductsScreen(),
               EditProductScreen.routeName: (ctx) => const EditProductScreen(),
+              SaveProductScreen.routeName: (ctx) => const SaveProductScreen(),
             },
           );
         },

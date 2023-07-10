@@ -6,9 +6,12 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.0'
+        classpath 'com.android.tools.build:gradle:7.2.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
+//    defaultConfig {
+//        multiDexEnabled true
+//    }
 }
 
 allprojects {
@@ -22,10 +25,20 @@ rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
+
 subprojects {
-    project.evaluationDependsOn(':app')
+    afterEvaluate {
+        // check if `android` block is available
+        if (it.hasProperty('android')) {
+            android {
+                defaultConfig {
+                    minSdkVersion 20
+                }
+            }
+        }
+    }
 }
 
-task clean(type: Delete) {
+tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop/providers/user_products.dart';
+import 'package:my_shop/screens/save_product_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/cart.dart';
@@ -20,6 +22,16 @@ class ProductDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         title: Text(product.title),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Provider.of<UserProducts>(context, listen: false)
+                  .addProduct(product.title, product.price, product.imageUrl);
+              Navigator.of(context).pushNamed(SaveProductScreen.routeName);
+            },
+            icon: const Icon(Icons.save),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(

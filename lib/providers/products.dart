@@ -7,33 +7,7 @@ import '../services/http_exception.dart';
 import '../models/product.dart';
 
 class Products with ChangeNotifier {
-  List<Product> _list = [
-    // Product(
-    //   id: 'p1',
-    //   title: 'Macbook Pro',
-    //   description:
-    //       'Ajoyib Macbook Pro - u juda ham ajoyib!Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Ajoyib Macbook Pro - u juda ham ajoyib!Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Ajoyib Macbook Pro - u juda ham ajoyib!Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    //   price: 29.99,
-    //   imageUrl:
-    //       'https://images.unsplash.com/photo-1580522154071-c6ca47a859ad?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
-    // ),
-    // Product(
-    //   id: 'p2',
-    //   title: 'iPhone 13',
-    //   description: 'Ajoyib iPhone.',
-    //   price: 59.99,
-    //   imageUrl:
-    //       'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
-    // ),
-    // Product(
-    //   id: 'p3',
-    //   title: 'Apple Watch',
-    //   description: 'Uzgacha va qulay - xuddi siz xohlaganingizdek.',
-    //   price: 19.99,
-    //   imageUrl:
-    //       'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1772&q=80',
-    // ),
-  ];
+  List<Product> _list = [];
 
   String? _authToken;
   String? _userId;
@@ -53,7 +27,7 @@ class Products with ChangeNotifier {
 
   Future<void> getProductsFromFirebase([bool filterByUser = false]) async {
     final filterString =
-        filterByUser ? 'orderBy="creatorId"&equalTo="$_userId"' : '';
+    filterByUser ? 'orderBy="creatorId"&equalTo="$_userId"' : '';
     final url = Uri.parse(
         'https://my-shop-45cb3-default-rtdb.firebaseio.com/products.json?auth=$_authToken&$filterString');
 
@@ -77,7 +51,7 @@ class Products with ChangeNotifier {
             price: productData['price'],
             imageUrl: productData['imageUrl'],
             isFavorite:
-                favoriteData == null ? false : favoriteData[productId] ?? false,
+            favoriteData == null ? false : favoriteData[productId] ?? false,
           ));
         });
 
@@ -127,11 +101,12 @@ class Products with ChangeNotifier {
 
   Future<void> updateProduct(Product updatedProduct) async {
     final productIndex = _list.indexWhere(
-      (product) => product.id == updatedProduct.id,
+          (product) => product.id == updatedProduct.id,
     );
     if (productIndex >= 0) {
       final url = Uri.parse(
-          'https://my-shop-45cb3-default-rtdb.firebaseio.com/products/${updatedProduct.id}.json?auth=$_authToken');
+          'https://my-shop-45cb3-default-rtdb.firebaseio.com/products/${updatedProduct
+              .id}.json?auth=$_authToken');
       try {
         await http.patch(
           url,
